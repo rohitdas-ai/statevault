@@ -40,6 +40,8 @@ CREATE TABLE agent_semantic_memory (
 CREATE INDEX IF NOT EXISTS semantic_memory_hnsw_idx 
 ON agent_semantic_memory USING hnsw (embedding vector_cosine_ops);
 
+CREATE INDEX IF NOT EXISTS semantic_memory_session_id_idx ON agent_semantic_memory(session_id);
+
 -- migrate:down
 DROP TABLE IF EXISTS agent_semantic_memory CASCADE;
 DROP TABLE IF EXISTS agent_transactional_state CASCADE;
