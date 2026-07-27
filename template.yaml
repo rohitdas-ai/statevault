@@ -1,0 +1,54 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: StateVault Resilient Multi-Region Memory Engine Infrastructure
+
+Globals:
+  Function:
+    Timeout: 15
+    Runtime: python3.11
+    MemorySize: 256
+    Environment:
+      Variables:
+        COCKROACH_DB_URL: !Ref CockroachDbUrl
+        PADDLE_API_KEY: !Ref PaddleApiKey
+        PADDLE_PRODUCT_PRICE_ID: !Ref PaddlePriceId
+
+Parameters:
+  CockroachDbUrl:
+    Type: String
+    NoEcho: true
+  PaddleApiKey:
+    Type: String
+    NoEcho: true
+  PaddlePriceId:
+    Type: String
+
+Resources:
+  BillingQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "statevault-billing-queue-${AWS::Region}"
+
+  StateVaultSyncApi:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: lambda_function.handler
+      Events:
+        SyncApiEvent:
+          Type: Api
+          Properties:
+            Path: /v1/sync
+            Method: post
+
+  BillingWorkerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: backend/
+      Handler: billing_worker.handler
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt BillingQueue.Arn
+            BatchSize: 10
