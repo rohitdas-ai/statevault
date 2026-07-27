@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="StateVault - Persistent, multi-region memory-as-a-service for AI agent networks. Unify transactional state and vector memories natively in CockroachDB.">
+  <title>StateVault | Memory-as-a-Service for AI Agents</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-dark: #090616;
+      --card-bg: rgba(22, 17, 45, 0.6);
+      --card-hover: rgba(29, 23, 60, 0.85);
+      --border-color: rgba(139, 92, 246, 0.2);
+      --border-hover: rgba(139, 92, 246, 0.55);
+      --accent-purple: #8b5cf6;
+      --accent-cyan: #06b6d4;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --font-family: 'Inter', sans-serif;
+      --font-display: 'Outfit', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.1) 0%, transparent 45%);
+      color: var(--text-primary);
+      font-family: var(--font-family);
+      line-height: 1.6;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    header {
+      max-width: 1000px;
+      margin: 0 auto 50px auto;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%);
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--accent-cyan);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 30%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lead {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 30px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-hover);
+      box-shadow: 0 12px 30px rgba(139, 92, 246, 0.15);
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      margin-bottom: 20px;
+    }
+
+    .snippet-container {
+      position: relative;
+      background-color: rgba(9, 6, 22, 0.85);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 15px;
+      overflow-x: auto;
+    }
+
+    pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: var(--border-color);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-purple);
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    @media (min-width: 768px) {
+      .pricing-grid { grid-template-columns: 1fr 1fr; }
+    }
+
+    .pricing-card {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .pricing-card.premium {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
+      border-color: rgba(139, 92, 246, 0.4);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge">CockroachDB × AWS Hackathon</div>
+    <h1>StateVault Memory System</h1>
+    <p class="lead">Resilient, multi-region memory-as-a-service for AI agent networks unifying ACID transactional state and pgvector semantic search.</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Quickstart Integration</h2>
+      <p>Sync operational state and raw text memory atomically in a single HTTP POST request:</p>
+      
+      <div class="snippet-container">
+        <button class="copy-btn" onclick="navigator.clipboard.writeText(document.getElementById('code-snippet').innerText)">Copy</button>
+        <pre id="code-snippet"><code>import requests
+
+payload = {
+    "agent_id": "atlas_prod_01",
+    "state_key": "active_workflow_state",
+    "state_value": {"step": 1, "status": "processing"},
+    "raw_text_memory": "Anomalous traffic detected from region us-east-1."
+}
+headers = {"x-api-key": "YOUR_STATEVAULT_API_KEY"}
+
+response = requests.post("https://api.statevault.site/v1/sync", json=payload, headers=headers)
+print(response.json())</code></pre>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Metered Pricing Tiers</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3>Developer Free</h3>
+          <p>Ideal for prototyping and single-agent testing.</p>
+          <ul style="list-style:none; margin: 15px 0;">
+            <li>✓ 10,000 Atomic Syncs / month</li>
+            <li>✓ 1024d Titan Vector Indexing</li>
+            <li>✓ CockroachDB Serverless Storage</li>
+          </ul>
+        </div>
+        <div class="pricing-card premium">
+          <h3>Agentic Pro</h3>
+          <p>Metered usage for production multi-agent swarms.</p>
+          <ul style="list-style:none; margin: 15px 0;">
+            <li>✓ Unlimited Atomic Syncs ($0.001 / req)</li>
+            <li>✓ Active-Active Multi-Region (us-east-1 / us-west-2)</li>
+            <li>✓ SQS Paddle Automated Billing</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
