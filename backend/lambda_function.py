@@ -14,9 +14,17 @@ def get_db_connection():
         if conn is None or conn.closed:
             conn = psycopg2.connect(db_url, application_name="statevault_dual_sync_engine")
         else:
-            with conn.cursor() as test_cur:
-                test_cur.execute("SELECT 1")
-    except (psycopg2.OperationalError, psycopg2.InterfaceError):
+            try:
+                with conn.cursor() as test_cur:
+                    test_cur.execute("SELECT 1")
+            except Exception:
+                if conn and not conn.closed:
+                    try:
+                        conn.rollback()
+                    except Exception:
+                        pass
+                conn = psycopg2.connect(db_url, application_name="statevault_dual_sync_engine")
+    except Exception:
         conn = psycopg2.connect(db_url, application_name="statevault_dual_sync_engine")
     return conn
 
@@ -25,7 +33,10 @@ bedrock_client = boto3.client(service_name="bedrock-runtime", region_name=curren
 sqs_client = boto3.client(service_name="sqs", region_name=current_region)
 
 aws_account = os.environ.get("AWS_ACCOUNT_ID", "000000000000")
-billing_queue_url = f"https://sqs.{current_region}.amazonaws.com/{aws_account}/statevault-billing-queue-{current_region}"
+billing_queue_url = os.environ.get(
+    "SQS_QUEUE_URL", 
+    f"https://sqs.{current_region}.amazonaws.com/{aws_account}/statevault-billing-queue-{current_region}"
+)
 
 def generate_embedding_coordinates(text_content):
     payload = json.dumps({
@@ -46,7 +57,8 @@ def generate_embedding_coordinates(text_content):
 
 def handler(event, context):
     try:
-        api_key = event.get("headers", {}).get("x-api-key") if event and event.get("headers") else None
+        headers = {k.lower(): v for k, v in event.get("headers", {}).items()} if event and event.get("headers") else {}
+        api_key = headers.get("x-api-key")
         if not api_key:
             return {
                 "statusCode": 401,

@@ -52,3 +52,28 @@ def test_valid_request_executes_transaction(mock_embed, mock_db):
         assert body["status"] == "success"
         assert body["session_id"] == "sess-456"
         assert mock_conn.commit.called
+
+@patch("lambda_function.get_db_connection")
+@patch("lambda_function.generate_embedding_coordinates")
+def test_uppercase_api_key_header(mock_embed, mock_db):
+    mock_embed.return_value = [0.1] * 1024
+    mock_conn = MagicMock()
+    mock_cur = MagicMock()
+    mock_db.return_value = mock_conn
+    mock_conn.cursor.return_value.__enter__.return_value = mock_cur
+    mock_cur.fetchone.side_effect = [
+        {"developer_id": "dev-123", "paddle_customer_id": "cust-123", "plan_tier": "free"},
+        {"session_id": "sess-789"}
+    ]
+    event = {
+        "headers": {"X-API-KEY": "test_secret_key"},
+        "body": json.dumps({
+            "agent_id": "agent-007",
+            "state_key": "active_step",
+            "state_value": {"step": 1},
+            "raw_text_memory": "Log anomaly"
+        })
+    }
+    res = lambda_function.handler(event, None)
+    assert res["statusCode"] == 200
+

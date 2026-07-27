@@ -34,6 +34,19 @@ Resources:
     Properties:
       CodeUri: backend/
       Handler: lambda_function.handler
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref BillingQueue
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - bedrock:InvokeModel
+              Resource: "*"
+            - Effect: Allow
+              Action:
+                - sqs:SendMessage
+              Resource: !GetAtt BillingQueue.Arn
       Events:
         SyncApiEvent:
           Type: Api
@@ -46,9 +59,15 @@ Resources:
     Properties:
       CodeUri: backend/
       Handler: billing_worker.handler
+      Policies:
+        - SQSPollerPolicy:
+            QueueName: !GetAtt BillingQueue.QueueName
       Events:
         SQSEvent:
           Type: SQS
           Properties:
             Queue: !GetAtt BillingQueue.Arn
             BatchSize: 10
+            FunctionResponseTypes:
+              - ReportBatchItemFailures
+

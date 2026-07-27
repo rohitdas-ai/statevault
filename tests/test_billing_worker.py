@@ -24,4 +24,20 @@ def test_billing_worker_aggregates_units_and_posts_to_paddle(mock_post):
     res = billing_worker.handler(event, None)
     assert res["status"] == "success"
     assert res["processed_clients"] == 2
+    assert res["batchItemFailures"] == []
     assert mock_post.call_count == 2
+
+@patch("requests.post")
+def test_billing_worker_reports_batch_item_failures(mock_post):
+    mock_post.side_effect = Exception("Paddle API Error")
+    
+    event = {
+        "Records": [
+            {"messageId": "msg-1", "body": json.dumps({"paddle_customer_id": "cust_A", "units": 2})}
+        ]
+    }
+    
+    res = billing_worker.handler(event, None)
+    assert res["status"] == "partial_success"
+    assert res["batchItemFailures"] == [{"itemIdentifier": "msg-1"}]
+

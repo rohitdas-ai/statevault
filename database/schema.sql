@@ -44,3 +44,8 @@ CREATE TABLE agent_semantic_memory (
 -- HNSW Cosine Proximity Index for fast, distributed semantic searches
 CREATE INDEX IF NOT EXISTS semantic_memory_hnsw_idx 
 ON agent_semantic_memory USING hnsw (embedding vector_cosine_ops);
+
+-- Session lookup index for agent semantic memory filtering and cascades
+CREATE INDEX IF NOT EXISTS agent_semantic_memory_session_idx 
+ON agent_semantic_memory(session_id);
+
