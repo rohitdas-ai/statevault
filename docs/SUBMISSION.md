@@ -1,8 +1,8 @@
 # StateVault: Resilient Multi-Region Memory-as-a-Service for AI Agent Networks
 
 **CockroachDB × AWS Hackathon 2026 Submission**  
-- **Live Demo Landing Page:** `https://statevault.github.io`  
-- **Public Open-Source Repository:** `https://github.com/statevault/statevault-core`  
+- **Live Demo Landing Page:** `https://rohitdas-ai.github.io/statevault`  
+- **Public Open-Source Repository:** `https://github.com/rohitdas-ai/statevault`  
 - **License:** MIT License (Visible in `LICENSE` file)  
 - **Video Screencast:** (< 3 minutes public video link)  
 

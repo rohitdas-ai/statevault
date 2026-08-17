@@ -5,7 +5,7 @@
 [![AWS](https://img.shields.io/badge/AWS-Lambda%20%7C%20Bedrock%20%7C%20SQS-ff9900.svg)](https://aws.amazon.com)
 
 **CockroachDB × AWS Hackathon 2026 Submission**  
-- **Live Demo Site:** [statevault.github.io](https://statevault.github.io)  
+- **Live Demo Site:** [rohitdas-ai.github.io/statevault](https://rohitdas-ai.github.io/statevault)  
 - **Devpost Submission Package:** [docs/SUBMISSION.md](docs/SUBMISSION.md)  
 - **MCP Configuration Guide:** [docs/MCP_CONFIG.md](docs/MCP_CONFIG.md)  
 

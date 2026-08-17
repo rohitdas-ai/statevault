@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-28  
 **Status:** Approved  
-**Target Domain:** `statevault.github.io`  
+**Target Domain:** `rohitdas-ai.github.io/statevault`  
 **Target Architecture:** CockroachDB (pgvector + JSONB) × AWS (Bedrock + Lambda + SQS)  
 
 ---

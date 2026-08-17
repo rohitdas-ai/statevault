@@ -9,7 +9,7 @@
 **Tech Stack:** Python 3.11 (`psycopg2-binary`, `boto3`, `requests`), PostgreSQL / CockroachDB (pgvector, HNSW index), AWS SAM (Lambda, SQS), Vanilla HTML5/CSS3 (Outfit, Inter, Fira Code).
 
 ## Global Constraints
-- Target Production Domain: `statevault.github.io`
+- Target Production Domain: `rohitdas-ai.github.io/statevault`
 - License: MIT (`LICENSE`)
 - Bedrock Embedding Model: `amazon.titan-embed-text-v2:0` (1024 dimensions, normalized)
 - Database Indexing: HNSW cosine proximity index (`vector_cosine_ops`, operator `<=>`)
@@ -72,7 +72,7 @@ AWS_ACCOUNT_ID="your_aws_account_number_here"
 AWS_REGION="us-east-1"
 
 # Domain Configuration
-TARGET_PRODUCTION_DOMAIN="statevault.github.io"
+TARGET_PRODUCTION_DOMAIN="rohitdas-ai.github.io/statevault"
 ```
 
 - [ ] **Step 3: Create ccloud health check script `scripts/ccloud_check.sh`**
@@ -859,7 +859,7 @@ git commit -m "feat: add Atlas Agent application test harness"
 - Create: `tests/test_landing_page.py`
 
 **Interfaces:**
-- Consumes: Web browsers requesting `statevault.github.io`
+- Consumes: Web browsers requesting `rohitdas-ai.github.io/statevault`
 - Produces: Dark glassmorphic landing page with Outfit/Inter typography, interactive code copy widget, and metered pricing grid.
 
 - [ ] **Step 1: Write test for landing page `tests/test_landing_page.py`**
