@@ -3,7 +3,7 @@
 **Document ID:** `2026-08-18-statevault-submission-design`  
 **Date:** 2026-08-18  
 **Status:** Approved  
-**Target Domain:** `statevault.site`  
+**Target Domain:** `statevault.github.io`  
 **Hackathon Target:** CockroachDB × AWS Hackathon ($8,750 Prize Pool)  
 **Primary Objective:** Deliver a complete, production-grade, dual-mode hackathon submission package demonstrating always-on, atomic agentic memory across failure modes.
 

@@ -2,7 +2,7 @@
 
 *   **Document Type:** Syntactically Corrected, Multi-Region Production Run Blueprint
 *   **Target Runner Compatibility:** Antigravity CLI (`agy`) Operating within VS Code Terminal Panels
-*   **Target Production Domain:** `statevault.site`
+*   **Target Production Domain:** `statevault.github.io`
 *   **Hackathon Tracking Portal:** Devpost (CockroachDB × AWS Hackathon)
 
 ---
@@ -21,7 +21,7 @@ This blueprint outlines the production-ready architecture of **StateVault**, cus
     1.  **Amazon Bedrock:** Dynamic generation of 1024-dimensional semantic coordinates using the *Amazon Titan Text Embeddings V2* model.
     2.  **AWS Lambda:** Serverless connection-pooled handler implementing transaction blocks and asynchronous billing.
     3.  **Amazon SQS:** Regional queues for decoupled usage aggregation, protecting external APIs from rate limits.
-    4.  **Amazon CloudFront & Route 53:** Active-active DNS latency routing, delivering sub-second failover and HTTPS delivery for `statevault.site`.
+    4.  **Amazon CloudFront & Route 53 / GitHub Pages:** Active-active DNS latency routing, delivering sub-second failover and HTTPS delivery for `statevault.github.io`.
 *   **Required Deliverables:**
     1.  **Open Source License:** Visible `LICENSE` file containing the MIT License at the root of the repository.
     2.  **Clean Repository Layout:** Mirroring standard scaffolding exactly.
@@ -82,7 +82,7 @@ AWS_ACCOUNT_ID="your_aws_account_number_here"
 AWS_REGION="us-east-1"
 
 # Domain Configuration
-TARGET_PRODUCTION_DOMAIN="statevault.site"
+TARGET_PRODUCTION_DOMAIN="statevault.github.io"
 ```
 
 ---
@@ -91,9 +91,9 @@ TARGET_PRODUCTION_DOMAIN="statevault.site"
 
 Execute these onboarding phases to establish credentials and model permissions prior to running automated build pipelines:
 
-### PHASE 3.1: DOMAIN & DNS SETUP
-1. Register the custom domain `statevault.site` at your chosen domain registrar.
-2. Delegate DNS nameservers to AWS Route 53 by creating a new public hosted zone for `statevault.site`.
+### PHASE 3.1: GITHUB PAGES & HOSTING SETUP
+1. Enable GitHub Pages in the repository settings to serve the static landing page at `https://statevault.github.io`.
+2. Configure custom DNS / GitHub Pages CNAME if linking a custom domain later.
 
 ### PHASE 3.2: COCKROACHDB SERVERLESS PROVISIONING
 1. Register or log in to the [CockroachDB Cloud Console](https://cockroachlabs.cloud).
@@ -1022,7 +1022,7 @@ Save the structured project documentation file at the root directory:
 # StateVault - Resilient Memory-as-a-Service for AI Agents
 
 **CockroachDB × AWS Hackathon Submission**
-- **Live Demo URL:** [Insert statevault.site URL here]
+- **Live Demo URL:** `https://statevault.github.io`
 - **Demo Video:** [Insert YouTube/Vimeo Link here (< 3 mins)]
 
 StateVault provides a persistent, multi-region operational memory layer for autonomous AI agents. Powered by CockroachDB Serverless and AWS, StateVault coordinates structured agent states and high-dimensional vector embeddings within single, atomic, always-on transactions.
@@ -1110,7 +1110,7 @@ Use this three-minute high-energy screen capture script to walk the judges throu
 
 *   **0:00 to 0:40 [The Problem Statement]:** Show your shell terminal running an agent loop using the `agy` CLI interface.
     > "This is Atlas, an autonomous AI agent executing task threads directly in our IDE shell. Atlas is currently tracking its checkout workflow state and conversation transcripts using a standard, standalone in-memory database. Watch what happens when we simulate a regional network outage: the agent completely crashes, loses its context variables, and enters an infinite error loop. For autonomous agents in production, memory loss isn't a minor bug — it is a complete application failure."
-*   **0:40 to 1:20 [The Solution & Demo]:** Display the custom CloudFront-hosted developer landing page at `statevault.site`.
+*   **0:40 to 1:20 [The Solution & Demo]:** Display the developer landing page hosted at `statevault.github.io`.
     > "To resolve this, we built StateVault: a resilient, active-active multi-region Memory-as-a-Service for AI applications, built on CockroachDB Serverless and AWS Lambda. With two lines of code, any developer can anchor their terminal agent fleets to an always-on transactional memory layer. Let us run the exact same regional outage test. As you can see, AWS Route 53 catches the network drop instantly and shifts calls to our backup region. Our serverless connection pool handles the database reconnect automatically, and the agent resumes execution seamlessly."
 *   **1:20 to 2:10 [CockroachDB Memory Layer at Work]:** Switch to the CockroachDB Cloud Console, showing the `agent_semantic_memory` and `agent_transactional_state` tables and the SQL Statements page.
     > "Here is the CockroachDB memory layer at work. In the Cloud Console, you can see StateVault coordinating transactional variables and 1024-dimensional semantic embeddings inside a single, distributed database transaction. We leverage Amazon Bedrock's Titan Text Embeddings V2 model to generate the vector coordinates, and write them directly into a CockroachDB HNSW index alongside our ACID state tables. This entirely eliminates data drift between our vector and operational stores."
