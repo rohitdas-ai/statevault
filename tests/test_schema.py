@@ -15,3 +15,7 @@ def test_schema_sql_exists_and_contains_vector_hnsw():
     assert "CREATE TABLE agent_semantic_memory" in sql
     assert "VECTOR(1024)" in sql
     assert "USING hnsw (embedding vector_cosine_ops)" in sql
+    assert "TSVECTOR GENERATED ALWAYS AS" in sql
+    assert "USING GIN (tsv)" in sql
+    assert "agent_checkpoints" in sql
+    assert "ttl_expire_after = '14 days'" in sql

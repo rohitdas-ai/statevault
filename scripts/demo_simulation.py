@@ -4,7 +4,7 @@ Demonstrates:
 1. Split-Brain Failure in fragmented AI memory stacks
 2. Atomic Dual-Sync in CockroachDB (Rollback on error -> Zero drift)
 3. Active-Active Region Outage & Connection Pool Auto-Recovery
-4. Semantic Context Recall using HNSW Cosine Distance (<=>)
+4. Hybrid Semantic Recall using CockroachDB Reciprocal Rank Fusion (RRF k=60)
 """
 import os
 import sys
@@ -76,16 +76,18 @@ def simulate_multi_region_outage_recovery():
     }
 
 def simulate_context_recall(query_text="anomalous login spikes"):
-    """Scenario 4: Semantic Context Recall using Cosine Proximity (<=>)."""
+    """Scenario 4: Hybrid Recall using in-database Reciprocal Rank Fusion (RRF)."""
     mock_memories = [
         {
             "raw_content": "Found anomalous login spikes in us-east-1 from range 192.168.1.0/24.",
             "spatial_distance_score": 0.082,
+            "rrf_score": 0.0328,
             "created_at": "2026-08-18T02:15:00Z"
         },
         {
             "raw_content": "Blocked IP range 192.168.1.0/24 due to suspicious activity.",
             "spatial_distance_score": 0.145,
+            "rrf_score": 0.0315,
             "created_at": "2026-08-18T02:16:30Z"
         }
     ]
@@ -116,7 +118,7 @@ def run_all_scenarios(interactive=True):
     res2 = simulate_statevault_dual_sync()
     print(f"  • Simulated Fault:      {YELLOW}Vector insert exception injected{RESET}")
     print(f"  • Transaction Status:   {CYAN}ROLLBACK TRIGGERED (State not orphaned){RESET}")
-    print(f"  • Auto-Retry:           {GREEN}COMMITTED (State + 1024d Embedding){RESET}")
+    print(f"  • Auto-Retry:           {GREEN}COMMITTED (State + 1024d Embedding + TSVECTOR){RESET}")
     print(f"  • Data Drift:           {GREEN}0.0% (ACID Guarantees Enforced){RESET}")
     print(f"  ↳ {GREEN}{res2['diagnosis']}{RESET}\n")
     if interactive:
@@ -134,12 +136,12 @@ def run_all_scenarios(interactive=True):
         time.sleep(0.5)
 
     # 4. Semantic Context Recall Demo
-    print(f"{BOLD}[4/4] SCENARIO 4: HNSW Vector Proximity Recall (<=>){RESET}")
+    print(f"{BOLD}[4/4] SCENARIO 4: In-Database Hybrid Recall (HNSW + TSVECTOR + RRF){RESET}")
     res4 = simulate_context_recall()
     print(f"  • Search Query:         \"{res4['query']}\"")
     for idx, mem in enumerate(res4["memories"], 1):
-        print(f"    [{idx}] Cosine Distance: {CYAN}{mem['spatial_distance_score']:.4f}{RESET} | Content: {mem['raw_content']}")
-    print(f"  ↳ {GREEN}Top Semantic Memory Recalled Successfully.{RESET}\n")
+        print(f"    [{idx}] RRF Score: {CYAN}{mem['rrf_score']:.4f}{RESET} (Cosine: {mem['spatial_distance_score']:.4f}) | Content: {mem['raw_content']}")
+    print(f"  ↳ {GREEN}Top Hybrid Context Recalled Successfully via SQL CTE.{RESET}\n")
 
     print(f"{BOLD}{GREEN}============================================================{RESET}")
     print(f"{BOLD}{GREEN}  ALL VERIFICATION SCENARIOS COMPLETED SUCCESSFULLY!        {RESET}")
