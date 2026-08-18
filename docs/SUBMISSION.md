@@ -123,15 +123,4 @@ curl -X POST https://api.statevault.site/v1/sync \
 - **Agent-Ready `ccloud` CLI:** The predictable noun-verb syntax and consistent `-o json` output made parsing cluster status and health metrics effortless from automated agent scripts.
 - **Agent Skills:** Codified database knowledge allowed the agent to self-audit schema patterns (`detect-schema-anti-patterns`) and verify operational readiness (`validate-production-readiness`) without external DBA intervention.
 
----
 
-## 7. 3-Minute Video Screencast Script
-
-- **[0:00 - 0:45] The Problem Statement:**
-  > *"When AI agents operate autonomously, memory loss is not a recoverable glitch—it is a complete system failure. Today, most agent architectures split state into Postgres and embeddings into a separate vector DB. When network hiccups or rate limits strike during an update, the vector write fails while the state commits. The agent suffers memory amnesia, enters infinite execution loops, or hallucinates wildly."*
-- **[0:45 - 1:35] The StateVault Solution & Dual-Engine:**
-  > *"To solve this, we built StateVault: resilient, multi-region Memory-as-a-Service powered by CockroachDB Serverless and AWS. In StateVault, every memory update is an atomic ACID transaction. We encode semantic context into 1024-dimensional vectors using Amazon Bedrock's Titan Text Embeddings V2, and commit both structured JSONB state and the pgvector HNSW embedding in a single database transaction. If the vector write fails, the entire transaction rolls back cleanly. Zero data drift."*
-- **[1:35 - 2:20] Live Outage & Semantic Recall Demonstration:**
-  > *"Let's see it in action with our simulation runner. When we simulate a traditional split stack, data drift corrupts memory immediately. Under StateVault, the transaction rolls back cleanly and retries atomically. When we simulate a primary region outage in us-east-1, our serverless connection pool detects the drop in 142ms and resumes on us-west-2 with zero data loss. And when the agent queries historical context, CockroachDB executes in-database Reciprocal Rank Fusion combining vector and full-text search."*
-- **[2:20 - 3:00] Toolchain & Architecture Summary:**
-  > *"StateVault integrates the full CockroachDB ecosystem: the hosted Managed MCP Server for read-only agent schema discovery, the ccloud CLI for automated JSON health checks, and CockroachDB Agent Skills for schema anti-pattern and production readiness verification. By pairing CockroachDB's un-killable architecture with AWS serverless compute, StateVault gives AI agents production-grade memory that never goes down."*
