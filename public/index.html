@@ -507,85 +507,109 @@
     function copySnippet() {
       const codeElement = document.getElementById("sync-curl-command");
       const textToCopy = codeElement.textContent;
-
       navigator.clipboard.writeText(textToCopy).then(() => {
         const toast = document.getElementById("toast-notification");
         toast.classList.add("show");
-        setTimeout(() => {
-          toast.classList.remove("show");
-        }, 2000);
-      }).catch(err => {
-        console.error("Failed to copy text: ", err);
-      });
+        setTimeout(() => { toast.classList.remove("show"); }, 2000);
+      }).catch(err => { console.error("Failed to copy text: ", err); });
+    }
+
+    function line(text, color) {
+      return '<span style="color:' + (color || '#a78bfa') + '">' + text + '</span><br>';
+    }
+
+    function scrollBottom() {
+      const el = document.getElementById("sim-output");
+      el.scrollTop = el.scrollHeight;
     }
 
     function injectSplitBrain() {
       const output = document.getElementById("sim-output");
-      output.innerHTML = "[SCENARIO 1] SIMULATING SPLIT-BRAIN FRAGMENTED STACK...\n";
-      output.innerHTML += "  • Write state to Postgres: SUCCESS (Committed)\n";
-      output.innerHTML += "  • Write vector to Remote DB: TIMEOUT / DROPPED (Connection lost)\n";
-      output.innerHTML += "  ↳ CRITICAL: State advanced, but vector lost. Irreversible memory desynchronization!\n";
+      output.innerHTML =
+        line("[SCENARIO 1] SIMULATING SPLIT-BRAIN FRAGMENTED STACK...", "#06b6d4") +
+        line("&nbsp;&nbsp;• Write state to Postgres: SUCCESS (Committed)", "#10b981") +
+        line("&nbsp;&nbsp;• Write vector to Remote DB: TIMEOUT / DROPPED (Connection lost)", "#ef4444") +
+        line("&nbsp;&nbsp;↳ CRITICAL: State advanced, vector lost. Irreversible memory desynchronization!", "#ef4444");
+      scrollBottom();
     }
 
     function injectDualSync() {
       const output = document.getElementById("sim-output");
-      output.innerHTML = "[SCENARIO 2] SIMULATING STATEVAULT ATOMIC DUAL-ENGINE...\n";
-      output.innerHTML += "  • Injected simulated vector write failure\n";
-      output.innerHTML += "  • Transaction Status: ROLLBACK (Zero orphaned state)\n";
-      output.innerHTML += "  • Auto-Retry: COMMITTED (JSONB State + 1024d Bedrock Titan Vector + TSVECTOR)\n";
-      output.innerHTML += "  ↳ SUCCESS: Atomic ACID single-transaction commit. 0.0% data drift.\n";
+      output.innerHTML =
+        line("[SCENARIO 2] SIMULATING STATEVAULT ATOMIC DUAL-ENGINE...", "#06b6d4") +
+        line("&nbsp;&nbsp;• Injected simulated vector write failure", "#f59e0b") +
+        line("&nbsp;&nbsp;• Transaction Status: ROLLBACK (Zero orphaned state)", "#f59e0b") +
+        line("&nbsp;&nbsp;• Auto-Retry: COMMITTED (JSONB + 1024d Bedrock Titan Vector + TSVECTOR)", "#10b981") +
+        line("&nbsp;&nbsp;↳ SUCCESS: Atomic ACID single-transaction commit. 0.0% data drift.", "#10b981");
+      scrollBottom();
     }
 
     function injectFailover() {
       const output = document.getElementById("sim-output");
-      output.innerHTML = "[SCENARIO 3] SIMULATING REGION OUTAGE & AUTO-FAILOVER...\n";
-      output.innerHTML += "  • Primary Node: us-east-1 connection dropped\n";
-      output.innerHTML += "  • Health Ping: SELECT 1 failed -> Auto-reconnect triggered\n";
-      output.innerHTML += "  • Failover Target: us-west-2 (Active-Active Replica) [142ms]\n";
-      output.innerHTML += "  ↳ RESILIENT: Route 53 and pool re-routed seamlessly with zero downtime.\n";
+      output.innerHTML =
+        line("[SCENARIO 3] SIMULATING REGION OUTAGE &amp; AUTO-FAILOVER...", "#06b6d4") +
+        line("&nbsp;&nbsp;• Primary Node: us-east-1 connection dropped", "#ef4444") +
+        line("&nbsp;&nbsp;• Health Ping: SELECT 1 failed → Auto-reconnect triggered", "#f59e0b") +
+        line("&nbsp;&nbsp;• Failover Target: us-west-2 (Active-Active Replica) [142ms]", "#10b981") +
+        line("&nbsp;&nbsp;↳ RESILIENT: Route 53 and pool re-routed seamlessly. Zero downtime.", "#10b981");
+      scrollBottom();
     }
 
     function injectHybridRecall() {
       const output = document.getElementById("sim-output");
-      output.innerHTML = "[SCENARIO 4] EXECUTING IN-DATABASE HYBRID RECALL (RRF k=60)...\n";
-      output.innerHTML += "  • Query: \"suspicious activity\"\n";
-      output.innerHTML += "  [1] RRF Score: 0.0328 (Cosine: 0.0820) | Content: \"Found anomalous login spikes in us-east-1...\"\n";
-      output.innerHTML += "  [2] RRF Score: 0.0315 (Cosine: 0.1450) | Content: \"Blocked IP range 192.168.1.0/24...\"\n";
-      output.innerHTML += "  ↳ SUCCESS: SQL CTE Reciprocal Rank Fusion blended vector + keyword results in single roundtrip.\n";
+      output.innerHTML =
+        line("[SCENARIO 4] EXECUTING IN-DATABASE HYBRID RECALL (RRF k=60)...", "#06b6d4") +
+        line('&nbsp;&nbsp;• Query: "suspicious activity"', "#a78bfa") +
+        line('&nbsp;&nbsp;[1] RRF: 0.0328 (Cosine: 0.0820) | "Found anomalous login spikes in us-east-1..."', "#10b981") +
+        line('&nbsp;&nbsp;[2] RRF: 0.0315 (Cosine: 0.1450) | "Blocked IP range 192.168.1.0/24..."', "#10b981") +
+        line("&nbsp;&nbsp;↳ SUCCESS: SQL CTE RRF blended vector + keyword results in single roundtrip.", "#10b981");
+      scrollBottom();
     }
 
     function runSimulator() {
       const output = document.getElementById("sim-output");
-      injectSplitBrain();
+      output.innerHTML = line("[StateVault] Starting full simulation suite...", "#06b6d4");
 
       setTimeout(() => {
-        output.innerHTML += "\n";
-        output.innerHTML += "[SCENARIO 2] SIMULATING STATEVAULT ATOMIC DUAL-ENGINE...\n";
-        output.innerHTML += "  • Injected simulated vector write failure\n";
-        output.innerHTML += "  • Transaction Status: ROLLBACK (Zero orphaned state)\n";
-        output.innerHTML += "  • Auto-Retry: COMMITTED (JSONB State + 1024d Bedrock Titan Vector + TSVECTOR)\n";
-        output.innerHTML += "  ↳ SUCCESS: Atomic ACID single-transaction commit. 0.0% data drift.\n";
-      }, 400);
+        output.innerHTML +=
+          line("<br>[SCENARIO 1] SIMULATING SPLIT-BRAIN FRAGMENTED STACK...", "#06b6d4") +
+          line("&nbsp;&nbsp;• Write state to Postgres: SUCCESS (Committed)", "#10b981") +
+          line("&nbsp;&nbsp;• Write vector to Remote DB: TIMEOUT / DROPPED (Connection lost)", "#ef4444") +
+          line("&nbsp;&nbsp;↳ CRITICAL: State advanced, vector lost. Irreversible memory desynchronization!", "#ef4444");
+        scrollBottom();
+      }, 300);
 
       setTimeout(() => {
-        output.innerHTML += "\n";
-        output.innerHTML += "[SCENARIO 3] SIMULATING REGION OUTAGE & AUTO-FAILOVER...\n";
-        output.innerHTML += "  • Primary Node: us-east-1 connection dropped\n";
-        output.innerHTML += "  • Health Ping: SELECT 1 failed -> Auto-reconnect triggered\n";
-        output.innerHTML += "  • Failover Target: us-west-2 (Active-Active Replica) [142ms]\n";
-        output.innerHTML += "  ↳ RESILIENT: Route 53 and pool re-routed seamlessly with zero downtime.\n";
-      }, 800);
+        output.innerHTML +=
+          line("<br>[SCENARIO 2] SIMULATING STATEVAULT ATOMIC DUAL-ENGINE...", "#06b6d4") +
+          line("&nbsp;&nbsp;• Injected simulated vector write failure", "#f59e0b") +
+          line("&nbsp;&nbsp;• Transaction Status: ROLLBACK (Zero orphaned state)", "#f59e0b") +
+          line("&nbsp;&nbsp;• Auto-Retry: COMMITTED (JSONB + 1024d Bedrock Titan Vector + TSVECTOR)", "#10b981") +
+          line("&nbsp;&nbsp;↳ SUCCESS: Atomic ACID single-transaction commit. 0.0% data drift.", "#10b981");
+        scrollBottom();
+      }, 900);
 
       setTimeout(() => {
-        output.innerHTML += "\n";
-        output.innerHTML += "[SCENARIO 4] EXECUTING IN-DATABASE HYBRID RECALL (RRF k=60)...\n";
-        output.innerHTML += "  • Query: \"suspicious activity\"\n";
-        output.innerHTML += "  [1] RRF Score: 0.0328 (Cosine: 0.0820) | Content: \"Found anomalous login spikes in us-east-1...\"\n";
-        output.innerHTML += "  [2] RRF Score: 0.0315 (Cosine: 0.1450) | Content: \"Blocked IP range 192.168.1.0/24...\"\n";
-        output.innerHTML += "  ↳ SUCCESS: SQL CTE Reciprocal Rank Fusion blended vector + keyword results in single roundtrip.\n";
-        output.innerHTML += "============================================================\n";
-        output.innerHTML += "✓ ALL SIMULATION VERIFICATIONS COMPLETED SUCCESSFULLY!\n";
-      }, 1200);
+        output.innerHTML +=
+          line("<br>[SCENARIO 3] SIMULATING REGION OUTAGE &amp; AUTO-FAILOVER...", "#06b6d4") +
+          line("&nbsp;&nbsp;• Primary Node: us-east-1 connection dropped", "#ef4444") +
+          line("&nbsp;&nbsp;• Health Ping: SELECT 1 failed → Auto-reconnect triggered", "#f59e0b") +
+          line("&nbsp;&nbsp;• Failover Target: us-west-2 (Active-Active Replica) [142ms]", "#10b981") +
+          line("&nbsp;&nbsp;↳ RESILIENT: Route 53 and pool re-routed seamlessly. Zero downtime.", "#10b981");
+        scrollBottom();
+      }, 1600);
+
+      setTimeout(() => {
+        output.innerHTML +=
+          line("<br>[SCENARIO 4] EXECUTING IN-DATABASE HYBRID RECALL (RRF k=60)...", "#06b6d4") +
+          line('&nbsp;&nbsp;• Query: "suspicious activity"', "#a78bfa") +
+          line('&nbsp;&nbsp;[1] RRF: 0.0328 (Cosine: 0.0820) | "Found anomalous login spikes in us-east-1..."', "#10b981") +
+          line('&nbsp;&nbsp;[2] RRF: 0.0315 (Cosine: 0.1450) | "Blocked IP range 192.168.1.0/24..."', "#10b981") +
+          line("&nbsp;&nbsp;↳ SUCCESS: SQL CTE RRF blended vector + keyword results in single roundtrip.", "#10b981") +
+          line("<br>════════════════════════════════════════════════════", "#a78bfa") +
+          line("✓ ALL SIMULATION VERIFICATIONS COMPLETED SUCCESSFULLY!", "#10b981");
+        scrollBottom();
+      }, 2400);
     }
   </script>
 </body>
